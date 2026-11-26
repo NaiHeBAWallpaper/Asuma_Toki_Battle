@@ -10,6 +10,8 @@ let loadingResolution;
 let spineData;
 
 let customScale = 1;
+let positionX = 0;
+let positionY = 0;
 let targetFps = 60;
 let bgmfile = './assets/audio/Theme_342.ogg';
 let bgmvolume = 0;
@@ -33,7 +35,17 @@ let flipped = false;
 let transpose = 1;
 
 let currentTracks = []; // 跟踪当前播放的音频
-window.selectedLanguage = 'Japanese'; // 全局语言变量（挂载到window对象）
+let interfaceLanguage = 'default';
+let steamLanguage = '';
+let subtitleLanguagePreference = 'auto';
+window.selectedLanguage = 'English';
+const subtitleLocales = {
+	English: 'en',
+	Chinese: 'zh-Hans',
+	TraditionalChinese: 'zh-Hant',
+	Japanese: 'ja',
+	Korean: 'ko'
+};
 
 const CHARACTER = 'CH0333';
 let modelResolution = '8k';
@@ -55,6 +67,14 @@ const AUDIO_DETAIL = [
             Chinese: [
                 "真是漂亮的朝阳呢。",
                 "在这里也许每天都可以观测到这份景色。"
+            ],
+            TraditionalChinese: [
+                "真是漂亮的朝陽呢。",
+                "在這裡也許每天都可以觀測到這份景色。"
+            ],
+            Korean: [
+                "아름다운 아침 빛입니다.",
+                "이 광경을 매일 볼 수 있습니다."
             ]
         }
     },
@@ -71,6 +91,14 @@ const AUDIO_DETAIL = [
             Chinese: [
                 "但是，我们来到这里记录也不过数日的时间…",
                 "也许不是每天都会如此美丽。"
+            ],
+            TraditionalChinese: [
+                "但是，我們來到這裡記錄也不過數日的時間…",
+                "也許不是每天都會如此美麗。"
+            ],
+            Korean: [
+                "하지만 우리가 도착한 이후 몇일 동안의 기록만 가지고 있습니다.",
+                "그래서 매일 그런 일이 아닐 수도 있습니다."
             ]
         }
     },
@@ -90,6 +118,16 @@ const AUDIO_DETAIL = [
                 "是的。",
                 "但是在这里能感受的颜色与以往完全不同。",
                 "天空也是如此…被橙黄的光辉照耀着的大地也是…"
+            ],
+            TraditionalChinese: [
+                "是的。",
+                "但是在這裡能感受的顏色與以往完全不同。",
+                "天空也是如此…被橙黃的光輝照耀著的大地也是…"
+            ],
+            Korean: [
+                "- 그래요",
+                "하지만 여기서 색은 완전히 다른 느낌입니다.",
+                "하늘... 그리고 아래의 땅, 황색으로 빛나는..."
             ]
         }
     },
@@ -106,6 +144,14 @@ const AUDIO_DETAIL = [
             Chinese: [
                 "我啊，很喜欢和老师共有这份美景的时间。",
                 "好像在这短暂的时间里心灵的振动都能传递一样…"
+            ],
+            TraditionalChinese: [
+                "我啊，很喜歡和老師共有這份美景的時間。",
+                "好像在這短暫的時間裡心靈的振動都能傳遞一樣…"
+            ],
+            Korean: [
+                "이 같은 순간을 좋아해, 시야를 공유해",
+                "내 마음을 감동시킨 것을 공유할 수 있는 순간들..."
             ]
         }
     },
@@ -122,6 +168,14 @@ const AUDIO_DETAIL = [
             Chinese: [
                 "那个瞬间只存在于现在。",
                 "而且不会再度重现。"
+            ],
+            TraditionalChinese: [
+                "那個瞬間只存在於現在。",
+                "而且不會再度重現。"
+            ],
+            Korean: [
+                "이 순간은 지금만 존재합니다.",
+                "그리고 다시는 오지 않을 것입니다."
             ]
         }
     },
@@ -138,6 +192,14 @@ const AUDIO_DETAIL = [
             Chinese: [
                 "老师。",
                 "如果现在就是最后的时刻来临之际――"
+            ],
+            TraditionalChinese: [
+                "老師。",
+                "如果現在就是最後的時刻來臨之際――"
+            ],
+            Korean: [
+                "상사님",
+                "만약 마지막 순간이 바로 지금 이 순간이면"
             ]
         }
     },
@@ -154,6 +216,14 @@ const AUDIO_DETAIL = [
             Chinese: [
                 "我能否在老师的身旁共有那个瞬间…",
                 "成为最后的那个人？"
+            ],
+            TraditionalChinese: [
+                "我能否在老師的身旁共有那個瞬間…",
+                "成為最後的那個人？"
+            ],
+            Korean: [
+                "그 순간을 여러분과 함께 공유할 수 있을까요?",
+                "그리고 마지막까지 당신과 함께 남아있는 사람이야?"
             ]
         }
     }
@@ -339,7 +409,8 @@ function drawHitboxes() {
 		n = (n / transpose) - (d[side].length / (transpose * 2));
 		n = n * customScale + (d[side].length / (transpose * 2));
 		n = (d[side].length / (transpose * 2)) - n;
-		return d[side].mid - n;
+		const offset = side === 'x' ? canvas.width * positionX : canvas.height * positionY;
+		return d[side].mid - n + offset;
 	}
 
 	for (const key in HITBOX) {
@@ -431,12 +502,45 @@ function setMouse(event) {
 		ax = canvas.width - ax;
 	}
 
-	return { x: ax, y: ay }
+	return { x: ax - canvas.width * positionX, y: ay - canvas.height * positionY };
+}
+
+function updateSubtitleLanguage() {
+	let language = subtitleLanguagePreference;
+	if (language === 'auto') {
+		const locale = interfaceLanguage === 'default' ? steamLanguage : interfaceLanguage;
+		const [primary, region] = locale.split(/[-_]/);
+		if (primary === 'tchinese' || (primary === 'zh' && ['cht', 'hant', 'tw', 'hk', 'mo'].includes(region))) {
+			language = 'TraditionalChinese';
+		} else if (primary === 'schinese' || primary === 'zh') {
+			language = 'Chinese';
+		} else if (primary === 'ja' || primary === 'japanese') {
+			language = 'Japanese';
+		} else if (primary === 'ko' || primary === 'korean' || primary === 'koreana') {
+			language = 'Korean';
+		} else {
+			language = 'English';
+		}
+	}
+
+	if (language === window.selectedLanguage) return;
+	window.selectedLanguage = language;
+	textbox.lang = subtitleLocales[language];
+	const clip = currentTracks.at(-1);
+	if (dialogBox && clip) textbox.textContent = clip.dialog[language][clip.index];
 }
 
 function init() {
 	// Wallpaper Engine settings
 	window.wallpaperPropertyListener = {
+		applyGeneralProperties: (props) => {
+			const language = props.language?.value ?? props.language;
+			const steamLocale = props.steamlanguage?.value ?? props.steamlanguage;
+			if (typeof language !== 'string' && typeof steamLocale !== 'string') return;
+			if (typeof language === 'string') interfaceLanguage = language.toLowerCase();
+			if (typeof steamLocale === 'string') steamLanguage = steamLocale.toLowerCase();
+			updateSubtitleLanguage();
+		},
 		applyUserProperties: (props) => {
 			if (props.schemecolor) {
 				bufferColor = props.schemecolor.value.split(" ");
@@ -445,8 +549,16 @@ function init() {
 			if (props.scale) {
 				customScale = props.scale.value;
 				document.documentElement.style.setProperty('--wallpaper-scale', customScale);
-				resize();
 			}
+			if (props.positionx) {
+				positionX = props.positionx.value / 100;
+				document.documentElement.style.setProperty('--wallpaper-position-x', props.positionx.value + 'vw');
+			}
+			if (props.positiony) {
+				positionY = props.positiony.value / 100;
+				document.documentElement.style.setProperty('--wallpaper-position-y', props.positiony.value + 'vh');
+			}
+			if (props.scale || props.positionx || props.positiony) resize();
 			if (props.targetfps) targetFps = props.targetfps.value;
 
 			if (props.introanimation) introAnimation = props.introanimation.value;
@@ -479,18 +591,15 @@ function init() {
 
 			// 监听模型分辨率设置
 			if (props.modelresolution) modelResolution = props.modelresolution.value;
-			if (assetManager && typeof introAnimation !== 'undefined' && !modelFrame && loadingResolution !== modelResolution) {
+			if (assetManager && typeof introAnimation !== 'undefined' && !modelFrame &&
+				(props.modelresolution || loadingResolution !== modelResolution)) {
 				reloadModel();
 			}
 
-			// 新增：监听语言选择
 			if (props.dialoglanguage) {
-				window.selectedLanguage = props.dialoglanguage.value; // 更新全局语言变量
-				// 更新当前播放的音频文本
-				const clip = currentTracks[currentTracks.length - 1];
-				if (dialogBox && clip) {
-					textbox.textContent = clip.dialog[window.selectedLanguage][clip.index];
-				}
+				const language = props.dialoglanguage.value;
+				subtitleLanguagePreference = Object.hasOwn(subtitleLocales, language) ? language : 'auto';
+				updateSubtitleLanguage();
 			}
 
 			if (props.bgmfile) {
@@ -513,6 +622,7 @@ function init() {
 	};
 
 	textbox = document.getElementById('textbox');
+	textbox.lang = subtitleLocales[window.selectedLanguage];
 
 	canvas = document.getElementById('canvas');
 	canvas.addEventListener('mouseleave', releaseHeadpatOnExit);
@@ -543,6 +653,7 @@ function init() {
 		if (loadingResolution === undefined && !modelFrame) reloadModel();
 	}, 350);
 
+	window.addEventListener('resize', resize);
 	window.addEventListener('pagehide', event => {
 		if (event.persisted) return;
 		canvas.style.visibility = 'hidden';
@@ -641,6 +752,8 @@ function reloadModel() {
 
 // CITATION: http://esotericsoftware.com/spine-api-reference#
 // CITATION: http://en.esotericsoftware.com/forum/Spine-Unity-Making-the-arm-follow-the-mouse-7856
+let modelMouseHandlersBound = false;
+
 function interactionLoad() {
 	// Touch_Point and Touch_Eye
 	TPoint = spineData.skeleton.findBone('Touch_Point');
@@ -648,21 +761,24 @@ function interactionLoad() {
 	EPointX = TEye.x;
 	EPointY = TEye.y;
 
-	downaction = canvas.addEventListener('mousedown', function (event) {
-		if (!acceptingClick) {
-			return;
-		}
-		acceptingClick = false;
-		let mouseData = setMouse(event);
-		pressedMouse(mouseData.x, mouseData.y);
-	});
-	upaction = canvas.addEventListener('mouseup', function () {
-		releasedMouse();
-	});
-	moveaction = canvas.addEventListener('mousemove', function (event) {
-		let mouseData = setMouse(event);
-		movedMouse(mouseData.x, mouseData.y);
-	});
+	if (!modelMouseHandlersBound) {
+		modelMouseHandlersBound = true;
+		downaction = canvas.addEventListener('mousedown', function (event) {
+			if (!acceptingClick) {
+				return;
+			}
+			acceptingClick = false;
+			let mouseData = setMouse(event);
+			pressedMouse(mouseData.x, mouseData.y);
+		});
+		upaction = canvas.addEventListener('mouseup', function () {
+			releasedMouse();
+		});
+		moveaction = canvas.addEventListener('mousemove', function (event) {
+			let mouseData = setMouse(event);
+			movedMouse(mouseData.x, mouseData.y);
+		});
+	}
 
 	if (!introAnimation) {
 		acceptingClick = true;
@@ -825,9 +941,12 @@ function render() {
 function resize() {
 	let w = canvas.clientWidth;
 	let h = canvas.clientHeight;
+	if (w === 0 || h === 0) return;
 	if (canvas.width != w || canvas.height != h) {
 		canvas.width = w;
 		canvas.height = h;
+		overlay.width = w;
+		overlay.height = h;
 	}
 
 	// Set values to position skeleton to center of canvas.
@@ -853,7 +972,7 @@ function resize() {
 		transpose = 1600 / canvas.height;
 	}
 
-	mvp.ortho2d(centerX - width / 2, centerY - height / 2, width, height);
+	mvp.ortho2d(centerX - width / 2 - positionX * width, centerY - height / 2 + positionY * height, width, height);
 	gl.viewport(0, 0, canvas.width, canvas.height);
 }
 
