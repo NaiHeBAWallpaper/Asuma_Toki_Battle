@@ -44,7 +44,8 @@ const subtitleLocales = {
 	Chinese: 'zh-Hans',
 	TraditionalChinese: 'zh-Hant',
 	Japanese: 'ja',
-	Korean: 'ko'
+	Korean: 'ko',
+	Thai: 'th'
 };
 
 const CHARACTER = 'CH0333';
@@ -61,21 +62,22 @@ const AUDIO_DETAIL = [
                 "ここでは毎日、この景色が観測できます。"
             ],
             English: [
-                "It’s a beautiful morning glow.",
-                "This view can be observed here every day."
+                "What a pretty sunrise.",
+                "We see this view daily here."
             ],
             Chinese: [
                 "真是漂亮的朝阳呢。",
                 "在这里也许每天都可以观测到这份景色。"
             ],
             TraditionalChinese: [
-                "真是漂亮的朝陽呢。",
-                "在這裡也許每天都可以觀測到這份景色。"
+                "真是美麗的朝霞呢。",
+                "在這裡的每一天，都能觀測到這樣的景色。"
             ],
             Korean: [
-                "아름다운 아침 빛입니다.",
-                "이 광경을 매일 볼 수 있습니다."
-            ]
+                "예쁜 아침노을이네요.",
+                "이곳에서는 매일, 이 경치가 관측됩니다."
+            ],
+            Thai: ["เป็นแสงรุ่งอรุณที่สวยจังเลยนะคะ","ฉันเห็นวิวทิวทัศน์แบบนี้ จากที่นี่ทุกวันเลยค่ะ"]
         }
     },
     {
@@ -85,21 +87,22 @@ const AUDIO_DETAIL = [
                 "毎日ではないのかもしれませんが。"
             ],
             English: [
-                "That said, I only have records from the few days since we arrived…",
-                "So it may not truly be every day."
+                "Although, we only have a few records logged since we got here...",
+                "So it may not be EVERY day."
             ],
             Chinese: [
                 "但是，我们来到这里记录也不过数日的时间…",
                 "也许不是每天都会如此美丽。"
             ],
             TraditionalChinese: [
-                "但是，我們來到這裡記錄也不過數日的時間…",
-                "也許不是每天都會如此美麗。"
+                "話雖如此，由於只有來到這裡之後幾天份的記錄……",
+                "或許不是每天都有也說不定。"
             ],
             Korean: [
-                "하지만 우리가 도착한 이후 몇일 동안의 기록만 가지고 있습니다.",
-                "그래서 매일 그런 일이 아닐 수도 있습니다."
-            ]
+                "그렇다고 해도, 여기에 온 며칠분의 기록밖에 없기에.",
+                "매일은 아닐지도 모르겠지만요."
+            ],
+            Thai: ["แต่ถึงยังไง ก็มีบันทึกของที่นี่ แค่สองสามวันเท่านั้น","งั้นก็อาจจะไม่ใช่ ทุกวันก็ได้ค่ะ"]
         }
     },
     {
@@ -111,8 +114,8 @@ const AUDIO_DETAIL = [
             ],
             English: [
                 "Yes.",
-                "But from here, the colors feel entirely different.",
-                "The sky… and the land below, glowing in amber…"
+                "Still, the color feels completely different here.",
+                "The sky...and even the land glows orange."
             ],
             Chinese: [
                 "是的。",
@@ -121,14 +124,15 @@ const AUDIO_DETAIL = [
             ],
             TraditionalChinese: [
                 "是的。",
-                "但是在這裡能感受的顏色與以往完全不同。",
-                "天空也是如此…被橙黃的光輝照耀著的大地也是…"
+                "不過，從這裡看的話感覺顏色完全不同。",
+                "無論是天空……還是閃耀著橙色的大地……"
             ],
             Korean: [
-                "- 그래요",
-                "하지만 여기서 색은 완전히 다른 느낌입니다.",
-                "하늘... 그리고 아래의 땅, 황색으로 빛나는..."
-            ]
+                "네.",
+                "그래도, 이곳에서는 전혀 다른 색으로 느껴집니다.",
+                "하늘도…… 주황색으로 빛나는 대지도……"
+            ],
+            Thai: ["ค่ะ","แต่ถึงยังไง ฉันก็รู้สึกว่า สีสันของที่นี่มันต่างออกไปค่ะ","ทั้งสีท้องฟ้า... และผืนดินที่เป็นประกายสีส้ม..."]
         }
     },
     {
@@ -138,21 +142,22 @@ const AUDIO_DETAIL = [
                 "心が動いたものをこうして伝えられるこのひと時が……。"
             ],
             English: [
-                "I like moments like this, sharing the view with you, Sensei.",
-                "Moments where I can share what has moved my heart…"
+                "I enjoy these moments where I can share the scenery with Sensei.",
+                "I like being able to share my experiences with you."
             ],
             Chinese: [
                 "我啊，很喜欢和老师共有这份美景的时间。",
                 "好像在这短暂的时间里心灵的振动都能传递一样…"
             ],
             TraditionalChinese: [
-                "我啊，很喜歡和老師共有這份美景的時間。",
-                "好像在這短暫的時間裡心靈的振動都能傳遞一樣…"
+                "我，喜歡像這樣和老師共享景色的時光。",
+                "將令人心動的事物傳達出去的這個時刻……"
             ],
             Korean: [
-                "이 같은 순간을 좋아해, 시야를 공유해",
-                "내 마음을 감동시킨 것을 공유할 수 있는 순간들..."
-            ]
+                "저는, 선생님과 이렇게 풍경을 공유하는 시간이 좋습니다.",
+                "선생님께, 제가 느낀 것을 전할 수 있다는 게 좋습니다."
+            ],
+            Thai: ["ฉันชอบช่วงเวลา ที่ได้ชมวิวทิวทัศน์ กับคุณครูแบบนี้ค่ะ","ฉันชอบการที่ ฉันส่งต่อความรู้สึก ที่มีต่อคุณครูได้ค่ะ"]
         }
     },
     {
@@ -162,21 +167,22 @@ const AUDIO_DETAIL = [
                 "そして、二度と戻ってこない。"
             ],
             English: [
-                "This moment exists only here and now.",
-                "And it will never come again."
+                "This moment only exists right now.",
+                "And it will never return."
             ],
             Chinese: [
                 "那个瞬间只存在于现在。",
                 "而且不会再度重现。"
             ],
             TraditionalChinese: [
-                "那個瞬間只存在於現在。",
-                "而且不會再度重現。"
+                "這個瞬間，只存在於此時此刻。",
+                "並且，再也不會重現。"
             ],
             Korean: [
-                "이 순간은 지금만 존재합니다.",
-                "그리고 다시는 오지 않을 것입니다."
-            ]
+                "이 순간은, 지금 이 시간에만 존재합니다.",
+                "그리고, 다시는 돌아오지 않겠지요."
+            ],
+            Thai: ["ช่วงเวลานี้ มีอยู่จริงแค่ใน ปัจจุบันขณะเท่านั้นค่ะ","อีกอย่าง มันก็คงไม่กลับมาอีกแล้วค่ะ"]
         }
     },
     {
@@ -187,7 +193,7 @@ const AUDIO_DETAIL = [
             ],
             English: [
                 "Sensei.",
-                "If the final moment were to arrive right now—"
+                "If the \"final\" moment were to come right now..."
             ],
             Chinese: [
                 "老师。",
@@ -195,36 +201,38 @@ const AUDIO_DETAIL = [
             ],
             TraditionalChinese: [
                 "老師。",
-                "如果現在就是最後的時刻來臨之際――"
+                "如果現在，「最後」的時刻到來的話──"
             ],
             Korean: [
-                "상사님",
-                "만약 마지막 순간이 바로 지금 이 순간이면"
-            ]
+                "선생님.",
+                "만일 지금 '최후'의 순간이 다가온다면."
+            ],
+            Thai: ["คุณครู","ถ้า 'ช่วงเวลาสุดท้าย' มาถึงในตอนนี้"]
         }
     },
     {
         dialog: {
             Japanese: [
                 "私は、先生のそばでその瞬間を共にする……。",
-                "「最後」の一人になれますか？?"
+                "「最後」の一人になれますか？"
             ],
             English: [
-                "May I share that moment with you, by your side…",
-                "And be the one who remains with you until the very end?"
+                "Would I be capable of being the \"final\" person",
+                "to stand by your side?"
             ],
             Chinese: [
                 "我能否在老师的身旁共有那个瞬间…",
                 "成为最后的那个人？"
             ],
             TraditionalChinese: [
-                "我能否在老師的身旁共有那個瞬間…",
-                "成為最後的那個人？"
+                "我，能成為在老師身邊共度那個瞬間的……",
+                "「最後」的那個人嗎？"
             ],
             Korean: [
-                "그 순간을 여러분과 함께 공유할 수 있을까요?",
-                "그리고 마지막까지 당신과 함께 남아있는 사람이야?"
-            ]
+                "저는, 선생님 곁에서 그 순간을 함께 하는,",
+                "'최후'의 한 사람이, 될 수 있을까요?"
+            ],
+            Thai: ["ฉันขอเป็น 'คนสุดท้าย' ที่จะอยู่ในช่วงเวลานี้","ข้างๆ กับคุณครู ได้มั้ยคะ?"]
         }
     }
 ];
@@ -336,7 +344,7 @@ function playVoiceline() {
 			track.play().catch(finish);
 
 			if (dialogBox) {
-				textbox.textContent = dialog[window.selectedLanguage][index];
+				textbox.textContent = getSubtitleText(dialog, window.selectedLanguage, index);
 				textbox.style.opacity = 1;
 			}
 		},
@@ -505,6 +513,16 @@ function setMouse(event) {
 	return { x: ax - canvas.width * positionX, y: ay - canvas.height * positionY };
 }
 
+function getSubtitleText(dialog, language, index) {
+	let text = dialog?.[language]?.[index];
+	if (text == null && language === 'Thai') {
+		language = 'English';
+		text = dialog?.[language]?.[index];
+	}
+	textbox.lang = subtitleLocales[language];
+	return text ?? "";
+}
+
 function updateSubtitleLanguage() {
 	let language = subtitleLanguagePreference;
 	if (language === 'auto') {
@@ -518,6 +536,8 @@ function updateSubtitleLanguage() {
 			language = 'Japanese';
 		} else if (primary === 'ko' || primary === 'korean' || primary === 'koreana') {
 			language = 'Korean';
+		} else if (primary === 'th' || primary === 'thai') {
+			language = 'Thai';
 		} else {
 			language = 'English';
 		}
@@ -527,7 +547,7 @@ function updateSubtitleLanguage() {
 	window.selectedLanguage = language;
 	textbox.lang = subtitleLocales[language];
 	const clip = currentTracks.at(-1);
-	if (dialogBox && clip) textbox.textContent = clip.dialog[language][clip.index];
+	if (dialogBox && clip) textbox.textContent = getSubtitleText(clip.dialog, language, clip.index);
 }
 
 function init() {
